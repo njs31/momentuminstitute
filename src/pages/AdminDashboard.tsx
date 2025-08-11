@@ -1,19 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Users,
-  Phone,
-  Calendar,
   Search,
-  Filter,
   Eye,
   Trash2,
   Download,
   RefreshCw,
   MessageSquare,
-  Clock,
-  User,
-  Mail,
   LogOut,
 } from "lucide-react";
 import { CallbackService } from "../services/callbackService";
@@ -43,13 +36,15 @@ const AdminDashboard: React.FC = () => {
       setError(null);
 
       const result = await CallbackService.getAllRequests();
-      
+
       if (result.status === "success" && result.data) {
         // Handle the data properly - it might be an array or single object
-        const submissionsData = Array.isArray(result.data) ? result.data : [result.data];
+        const submissionsData = Array.isArray(result.data)
+          ? result.data
+          : [result.data];
         // Filter out any entries without an id and ensure type safety
-        const validSubmissions = submissionsData.filter((sub): sub is FormSubmission => 
-          sub.id !== undefined
+        const validSubmissions = submissionsData.filter(
+          (sub): sub is FormSubmission => sub.id !== undefined
         );
         setSubmissions(validSubmissions);
         setFilteredSubmissions(validSubmissions);
@@ -216,7 +211,7 @@ const AdminDashboard: React.FC = () => {
   ) => {
     try {
       const result = await CallbackService.updateStatus(id, newStatus);
-      
+
       if (result.status === "success") {
         setSubmissions((prev) =>
           prev.map((sub) =>
@@ -245,7 +240,7 @@ const AdminDashboard: React.FC = () => {
     if (window.confirm("Are you sure you want to delete this submission?")) {
       try {
         const result = await CallbackService.deleteRequest(id);
-        
+
         if (result.status === "success") {
           setSubmissions((prev) => prev.filter((sub) => sub.id !== id));
         } else {
@@ -293,15 +288,6 @@ const AdminDashboard: React.FC = () => {
     }.csv`;
     a.click();
     window.URL.revokeObjectURL(url);
-  };
-
-  const stats = {
-    total: submissions.length,
-    new: submissions.filter((s) => s.status === "new").length,
-    contacted: submissions.filter((s) => s.status === "contacted").length,
-    enrolled: submissions.filter((s) => s.status === "enrolled").length,
-    notInterested: submissions.filter((s) => s.status === "not_interested")
-      .length,
   };
 
   if (isLoading) {
@@ -357,103 +343,6 @@ const AdminDashboard: React.FC = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Error Message */}
-        {error && (
-          <div className="mb-6 p-4 bg-red-100 border border-red-300 rounded-lg">
-            <div className="flex items-center space-x-2">
-              <svg
-                className="w-5 h-5 text-red-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <span className="text-red-700 font-medium">
-                {error} - Using fallback data
-              </span>
-            </div>
-          </div>
-        )}
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-          <div className="bg-white rounded-lg shadow p-4">
-            <div className="flex items-center">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Users className="w-6 h-6 text-blue-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Total</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {stats.total}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-4">
-            <div className="flex items-center">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <MessageSquare className="w-6 h-6 text-blue-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">New</p>
-                <p className="text-2xl font-bold text-blue-600">{stats.new}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-4">
-            <div className="flex items-center">
-              <div className="p-2 bg-yellow-100 rounded-lg">
-                <Phone className="w-6 h-6 text-yellow-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Contacted</p>
-                <p className="text-2xl font-bold text-yellow-600">
-                  {stats.contacted}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-4">
-            <div className="flex items-center">
-              <div className="p-2 bg-green-100 rounded-lg">
-                <User className="w-6 h-6 text-green-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Enrolled</p>
-                <p className="text-2xl font-bold text-green-600">
-                  {stats.enrolled}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-4">
-            <div className="flex items-center">
-              <div className="p-2 bg-red-100 rounded-lg">
-                <Clock className="w-6 h-6 text-red-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">
-                  Not Interested
-                </p>
-                <p className="text-2xl font-bold text-red-600">
-                  {stats.notInterested}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Filters and Search */}
         <div className="bg-white rounded-lg shadow mb-6 p-4">
           <div className="flex flex-col lg:flex-row gap-4">
@@ -678,12 +567,44 @@ const AdminDashboard: React.FC = () => {
                   </label>
                   <select
                     value={selectedSubmission.status}
-                                            onChange={(e) =>
-                          updateStatus(
-                            selectedSubmission.id!,
-                            e.target.value as FormSubmission["status"]
-                          )
-                        }
+                    onChange={(e) =>
+                      updateStatus(
+                        selectedSubmission.id!,
+                        e.target.value as FormSubmission["status"]
+                      )
+                    }
                     className={`px-3 py-2 text-sm font-medium rounded-lg ${getStatusColor(
                       selectedSubmission.status
-                    )} border-0 focus:ring-2 focus:ring-primary`
+                    )} border-0 focus:ring-2 focus:ring-primary`}
+                  >
+                    <option value="new">New</option>
+                    <option value="contacted">Contacted</option>
+                    <option value="enrolled">Enrolled</option>
+                    <option value="not_interested">Not Interested</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-8">
+                <button
+                  onClick={() => setShowDetailModal(false)}
+                  className="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Close
+                </button>
+                <a
+                  href={`tel:${selectedSubmission.phone}`}
+                  className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors text-center"
+                >
+                  Call Student
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default AdminDashboard;
