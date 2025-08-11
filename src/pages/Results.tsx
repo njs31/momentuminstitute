@@ -1,9 +1,6 @@
 import React from "react";
 import { Trophy, Star, Award, TrendingUp } from "lucide-react";
-import { useRequestCall } from "../contexts/RequestCallContext";
-
 const Results: React.FC = () => {
-  const { openModal } = useRequestCall();
 
   const previousResults = [
     {
@@ -219,12 +216,14 @@ const Results: React.FC = () => {
             success story
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
-              onClick={openModal}
+            <a
+              href="https://docs.google.com/forms/d/e/1FAIpQLSdW6iIOxzSYwbyZiV6XLwDgdHnd5hNRuxJ2XJ0fqalZwYTO0Q/viewform?usp=header"
+              target="_blank"
+              rel="noopener noreferrer"
               className="bg-primary text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-dark transition-colors"
             >
               Request a Call
-            </button>
+            </a>
             <a
               href="tel:8340118918"
               className="bg-white text-accent px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"

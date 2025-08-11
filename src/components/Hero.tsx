@@ -1,10 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { GraduationCap } from 'lucide-react';
-import { useRequestCall } from '../contexts/RequestCallContext';
 
 const Hero: React.FC = () => {
-  const { openModal } = useRequestCall();
 
   return (
     <section className="relative min-h-screen flex items-center">
@@ -29,12 +27,14 @@ const Hero: React.FC = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start animate-slide-up">
-              <button
-                onClick={openModal}
+              <a
+                href="https://docs.google.com/forms/d/e/1FAIpQLSdW6iIOxzSYwbyZiV6XLwDgdHnd5hNRuxJ2XJ0fqalZwYTO0Q/viewform?usp=header"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="bg-primary text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold hover:bg-primary-dark transform hover:scale-105 transition-all duration-200 shadow-lg"
               >
                 Request a Call
-              </button>
+              </a>
               <Link
                 to="/courses"
                 className="bg-transparent border-2 border-white text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold hover:bg-white hover:text-accent transform hover:scale-105 transition-all duration-200"

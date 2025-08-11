@@ -1,6 +1,5 @@
 import React from 'react';
 import { Clock, Users, BookOpen } from 'lucide-react';
-import { useRequestCall } from '../contexts/RequestCallContext';
 
 interface CourseCardProps {
   title: string;
@@ -21,7 +20,6 @@ const CourseCard: React.FC<CourseCardProps> = ({
   features,
   ideal
 }) => {
-  const { openModal } = useRequestCall();
 
   return (
     <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-4 sm:p-6">
@@ -69,12 +67,14 @@ const CourseCard: React.FC<CourseCardProps> = ({
         </ul>
       </div>
 
-      <button
-        onClick={openModal}
-        className="w-full bg-primary text-white py-2.5 sm:py-3 rounded-lg font-semibold hover:bg-primary-dark transition-colors duration-200 text-sm sm:text-base"
+      <a
+        href="https://docs.google.com/forms/d/e/1FAIpQLSdW6iIOxzSYwbyZiV6XLwDgdHnd5hNRuxJ2XJ0fqalZwYTO0Q/viewform?usp=header"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="w-full bg-primary text-white py-2.5 sm:py-3 rounded-lg font-semibold hover:bg-primary-dark transition-colors duration-200 text-sm sm:text-base text-center block"
       >
         Request a Call
-      </button>
+      </a>
     </div>
   );
 };

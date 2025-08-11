@@ -2,10 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Trophy, Users, BookOpen, Phone, MapPin, Star } from "lucide-react";
 import Hero from "../components/Hero";
-import { useRequestCall } from "../contexts/RequestCallContext";
-
 const Home: React.FC = () => {
-  const { openModal } = useRequestCall();
 
   const courses = [
     {
@@ -151,12 +148,14 @@ const Home: React.FC = () => {
                 <Phone className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span className="font-semibold">8340118918</span>
               </a>
-              <button
-                onClick={openModal}
+              <a
+                href="https://docs.google.com/forms/d/e/1FAIpQLSdW6iIOxzSYwbyZiV6XLwDgdHnd5hNRuxJ2XJ0fqalZwYTO0Q/viewform?usp=header"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="bg-white text-accent px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors text-sm sm:text-base"
               >
                 Request a Call
-              </button>
+              </a>
             </div>
 
             <div className="text-center md:text-right">

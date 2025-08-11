@@ -1,12 +1,9 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Phone } from "lucide-react";
-import { useRequestCall } from "../contexts/RequestCallContext";
-
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
-  const { openModal } = useRequestCall();
 
   const navigation = [
     { name: "Home", href: "/" },
@@ -56,12 +53,14 @@ const Header: React.FC = () => {
               <span className="font-medium hidden lg:inline">8340118918</span>
               <span className="font-medium lg:hidden">Call</span>
             </a>
-            <button
-              onClick={openModal}
+            <a
+              href="https://docs.google.com/forms/d/e/1FAIpQLSdW6iIOxzSYwbyZiV6XLwDgdHnd5hNRuxJ2XJ0fqalZwYTO0Q/viewform?usp=header"
+              target="_blank"
+              rel="noopener noreferrer"
               className="bg-primary text-white px-3 lg:px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors duration-200 text-sm lg:text-base font-medium"
             >
               Request a Call
-            </button>
+            </a>
           </div>
 
           {/* Mobile menu button */}
@@ -105,15 +104,15 @@ const Header: React.FC = () => {
                   {item.name}
                 </Link>
               ))}
-              <button
-                onClick={() => {
-                  openModal();
-                  setIsMenuOpen(false);
-                }}
+              <a
+                href="https://docs.google.com/forms/d/e/1FAIpQLSdW6iIOxzSYwbyZiV6XLwDgdHnd5hNRuxJ2XJ0fqalZwYTO0Q/viewform?usp=header"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="mx-4 mt-4 bg-primary text-white px-4 py-3 rounded-lg hover:bg-primary-dark transition-colors duration-200 text-center font-medium"
+                onClick={() => setIsMenuOpen(false)}
               >
                 Request a Call
-              </button>
+              </a>
             </nav>
           </div>
         )}
