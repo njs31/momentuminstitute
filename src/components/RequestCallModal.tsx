@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { useRequestCall } from '../contexts/RequestCallContext';
 import { useForm } from 'react-hook-form';
+import { CallbackService } from '../services/callbackService';
+import { CallbackRequest } from '../lib/supabase';
 
 interface FormData {
   name: string;
@@ -14,6 +16,7 @@ const RequestCallModal: React.FC = () => {
   const { isModalOpen, closeModal } = useRequestCall();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   
   const {
     register,
@@ -24,33 +27,24 @@ const RequestCallModal: React.FC = () => {
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
+    setErrorMessage(null);
     
     try {
-      // Mock API call - replace with actual endpoint
-      const response = await fetch('/api/request-call', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
+      const result = await CallbackService.createRequest(data as CallbackRequest);
 
-      if (response.ok) {
+      if (result.status === 'success') {
         setIsSuccess(true);
         reset();
         setTimeout(() => {
           setIsSuccess(false);
           closeModal();
         }, 2000);
+      } else {
+        setErrorMessage(result.message || 'Failed to submit request. Please try again.');
       }
     } catch (error) {
-      // Simulate success for demo
-      setIsSuccess(true);
-      reset();
-      setTimeout(() => {
-        setIsSuccess(false);
-        closeModal();
-      }, 2000);
+      console.error('Submission error:', error);
+      setErrorMessage('An unexpected error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -92,6 +86,12 @@ const RequestCallModal: React.FC = () => {
               </div>
             ) : (
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                {errorMessage && (
+                  <div className="bg-red-50 border border-red-200 rounded-md p-3">
+                    <p className="text-sm text-red-600">{errorMessage}</p>
+                  </div>
+                )}
+
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                     Full Name *

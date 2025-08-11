@@ -16,16 +16,11 @@ import {
   Mail,
   LogOut,
 } from "lucide-react";
+import { CallbackService } from "../services/callbackService";
+import { CallbackRequest } from "../lib/supabase";
 
-interface FormSubmission {
-  id: string;
-  name: string;
-  phone: string;
-  preferred_time: string;
-  message: string;
-  submitted_at: string;
-  status: "new" | "contacted" | "enrolled" | "not_interested";
-}
+// Use CallbackRequest type directly instead of duplicating
+type FormSubmission = CallbackRequest & { id: string };
 
 const AdminDashboard: React.FC = () => {
   const [submissions, setSubmissions] = useState<FormSubmission[]>([]);
@@ -41,23 +36,25 @@ const AdminDashboard: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // Fetch submissions from API
+  // Fetch submissions from Supabase
   const fetchSubmissions = async () => {
     try {
       setIsLoading(true);
       setError(null);
 
-      const response = await fetch("/api/request-call");
-      if (!response.ok) {
-        throw new Error("Failed to fetch submissions");
-      }
-
-      const result = await response.json();
-      if (result.status === "success") {
-        setSubmissions(result.data);
-        setFilteredSubmissions(result.data);
+      const result = await CallbackService.getAllRequests();
+      
+      if (result.status === "success" && result.data) {
+        // Handle the data properly - it might be an array or single object
+        const submissionsData = Array.isArray(result.data) ? result.data : [result.data];
+        // Filter out any entries without an id and ensure type safety
+        const validSubmissions = submissionsData.filter((sub): sub is FormSubmission => 
+          sub.id !== undefined
+        );
+        setSubmissions(validSubmissions);
+        setFilteredSubmissions(validSubmissions);
       } else {
-        throw new Error(result.error || "Failed to fetch submissions");
+        throw new Error(result.message || "Failed to fetch submissions");
       }
     } catch (error) {
       console.error("Error fetching submissions:", error);
@@ -65,7 +62,7 @@ const AdminDashboard: React.FC = () => {
         error instanceof Error ? error.message : "Failed to fetch submissions"
       );
 
-      // Fallback to mock data if API fails
+      // Fallback to mock data if Supabase fails
       const mockSubmissions: FormSubmission[] = [
         {
           id: "1",
@@ -218,25 +215,17 @@ const AdminDashboard: React.FC = () => {
     newStatus: FormSubmission["status"]
   ) => {
     try {
-      const response = await fetch("/api/request-call", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id, status: newStatus }),
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        if (result.status === "success") {
-          setSubmissions((prev) =>
-            prev.map((sub) =>
-              sub.id === id ? { ...sub, status: newStatus } : sub
-            )
-          );
-        }
+      const result = await CallbackService.updateStatus(id, newStatus);
+      
+      if (result.status === "success") {
+        setSubmissions((prev) =>
+          prev.map((sub) =>
+            sub.id === id ? { ...sub, status: newStatus } : sub
+          )
+        );
       } else {
-        // If API fails, update locally
+        console.error("Failed to update status:", result.message);
+        // Update locally if Supabase fails
         setSubmissions((prev) =>
           prev.map((sub) =>
             sub.id === id ? { ...sub, status: newStatus } : sub
@@ -245,7 +234,7 @@ const AdminDashboard: React.FC = () => {
       }
     } catch (error) {
       console.error("Error updating status:", error);
-      // Update locally if API fails
+      // Update locally if Supabase fails
       setSubmissions((prev) =>
         prev.map((sub) => (sub.id === id ? { ...sub, status: newStatus } : sub))
       );
@@ -255,19 +244,18 @@ const AdminDashboard: React.FC = () => {
   const deleteSubmission = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this submission?")) {
       try {
-        const response = await fetch(`/api/request-call?id=${id}`, {
-          method: "DELETE",
-        });
-
-        if (response.ok) {
+        const result = await CallbackService.deleteRequest(id);
+        
+        if (result.status === "success") {
           setSubmissions((prev) => prev.filter((sub) => sub.id !== id));
         } else {
-          // If API fails, delete locally
+          console.error("Failed to delete submission:", result.message);
+          // Delete locally if Supabase fails
           setSubmissions((prev) => prev.filter((sub) => sub.id !== id));
         }
       } catch (error) {
         console.error("Error deleting submission:", error);
-        // Delete locally if API fails
+        // Delete locally if Supabase fails
         setSubmissions((prev) => prev.filter((sub) => sub.id !== id));
       }
     }
@@ -557,7 +545,7 @@ const AdminDashboard: React.FC = () => {
                         value={submission.status}
                         onChange={(e) =>
                           updateStatus(
-                            submission.id,
+                            submission.id!,
                             e.target.value as FormSubmission["status"]
                           )
                         }
@@ -584,7 +572,7 @@ const AdminDashboard: React.FC = () => {
                           <Eye className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => deleteSubmission(submission.id)}
+                          onClick={() => deleteSubmission(submission.id!)}
                           className="text-red-600 hover:text-red-800 p-1"
                           title="Delete"
                         >
@@ -690,44 +678,12 @@ const AdminDashboard: React.FC = () => {
                   </label>
                   <select
                     value={selectedSubmission.status}
-                    onChange={(e) =>
-                      updateStatus(
-                        selectedSubmission.id,
-                        e.target.value as FormSubmission["status"]
-                      )
-                    }
+                                            onChange={(e) =>
+                          updateStatus(
+                            selectedSubmission.id!,
+                            e.target.value as FormSubmission["status"]
+                          )
+                        }
                     className={`px-3 py-2 text-sm font-medium rounded-lg ${getStatusColor(
                       selectedSubmission.status
-                    )} border-0 focus:ring-2 focus:ring-primary`}
-                  >
-                    <option value="new">New</option>
-                    <option value="contacted">Contacted</option>
-                    <option value="enrolled">Enrolled</option>
-                    <option value="not_interested">Not Interested</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="flex gap-3 mt-8">
-                <button
-                  onClick={() => setShowDetailModal(false)}
-                  className="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
-                >
-                  Close
-                </button>
-                <a
-                  href={`tel:${selectedSubmission.phone}`}
-                  className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors text-center"
-                >
-                  Call Student
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default AdminDashboard;
+                    )} border-0 focus:ring-2 focus:ring-primary`
