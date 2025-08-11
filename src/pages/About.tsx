@@ -10,7 +10,7 @@ import {
 
 const About: React.FC = () => {
   const [currentImage, setCurrentImage] = useState(0);
-  const galleryImages = ["/assets/classroom1.jpg", "/assets/classroom2.jpg"];
+  const galleryImages = ["/assets/classroom1.jpg"];
 
   const nextImage = () => {
     setCurrentImage((prev) => (prev + 1) % galleryImages.length);
