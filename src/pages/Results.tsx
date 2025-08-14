@@ -1,7 +1,6 @@
 import React from "react";
 import { Trophy, Star, Award, TrendingUp } from "lucide-react";
 const Results: React.FC = () => {
-
   const previousResults = [
     {
       year: "2023",
@@ -55,9 +54,10 @@ const Results: React.FC = () => {
         </div>
       </section>
 
-      {/* Featured Student */}
+      {/* Featured Students */}
       <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+          {/* Archi Raj - NEET 2024 */}
           <div className="bg-gradient-to-r from-primary to-primary-dark rounded-2xl p-8 md:p-12 text-white">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
               <div>
@@ -99,6 +99,56 @@ const Results: React.FC = () => {
                 <img
                   src="/assets/archi_raj_neet_2024.jpg"
                   alt="Archi Raj - NEET 2024 Top Performer"
+                  className="w-80 h-80 object-cover rounded-xl shadow-2xl"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Shaswat Panda - NEET 2023 */}
+          <div className="bg-gradient-to-r from-accent to-accent-dark rounded-2xl p-8 md:p-12 text-white">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+              <div>
+                <div className="flex items-center space-x-3 mb-6">
+                  <Trophy className="w-10 h-10 text-yellow-400" />
+                  <div>
+                    <h2 className="text-3xl font-bold">Featured Achievement</h2>
+                    <p className="text-accent-dark">Outstanding Performance</p>
+                  </div>
+                </div>
+
+                <h3 className="text-4xl font-bold mb-4">
+                  NEET 2023 — Shaswat Panda
+                </h3>
+
+                <div className="bg-white/10 rounded-xl p-6 mb-6">
+                  <h4 className="text-xl font-bold mb-3">
+                    All India Rank 11289
+                  </h4>
+                  <blockquote className="text-lg italic opacity-90">
+                    "Momentum Institute's structured approach and dedicated
+                    faculty played a crucial role in my NEET preparation. The
+                    regular mock tests and personalized guidance helped me
+                    achieve my target rank."
+                  </blockquote>
+                </div>
+
+                <div className="flex items-center space-x-6">
+                  <div className="flex items-center space-x-2">
+                    <Star className="w-5 h-5 text-yellow-400" />
+                    <span className="text-sm">Excellence in NEET</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Award className="w-5 h-5 text-yellow-400" />
+                    <span className="text-sm">All India Rank 11289</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-center lg:justify-end">
+                <img
+                  src="/assets/Shaswat Panda.jpg"
+                  alt="Shaswat Panda - NEET 2023 Achiever"
                   className="w-80 h-80 object-cover rounded-xl shadow-2xl"
                 />
               </div>
